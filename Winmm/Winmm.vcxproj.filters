@@ -29,9 +29,6 @@
     <ClCompile Include="stubs.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="player.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Winmm.c">
       <Filter>Source Files</Filter>
     </ClCompile>

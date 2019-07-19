@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "player.h"
 static HINSTANCE realWinmmDLL = 0;
 
 HINSTANCE getWinmmHandle()
@@ -1390,4 +1389,57 @@ void WINAPI fake_mmTaskYield()
     if (funcp == NULL)
         funcp = (void*)GetProcAddress(loadRealDLL(), "mmTaskYield");
     return (*funcp)();
+}
+
+//Reconnect remaining stuff back where it was
+UINT WINAPI fake_auxGetNumDevs()
+{
+	static UINT(WINAPI * funcp)() = NULL;
+	if (funcp == NULL)
+		funcp = (void*)GetProcAddress(loadRealDLL(), "auxGetNumDevs");
+	return (*funcp)();
+}
+
+MMRESULT WINAPI fake_auxGetDevCapsA(UINT_PTR uDeviceID, LPAUXCAPS lpCaps, UINT cbCaps)
+{
+	static MMRESULT(WINAPI * funcp)(UINT_PTR uDeviceID, LPAUXCAPS lpCaps, UINT cbCaps) = NULL;
+	if (funcp == NULL)
+		funcp = (void*)GetProcAddress(loadRealDLL(), "auxGetDevCapsA");
+	return (*funcp)(uDeviceID, lpCaps, cbCaps);
+}
+
+
+MMRESULT WINAPI fake_auxGetVolume(UINT uDeviceID, LPDWORD lpdwVolume)
+{
+	static MMRESULT(WINAPI * funcp)(UINT uDeviceID, LPDWORD lpdwVolumes) = NULL;
+	if (funcp == NULL)
+		funcp = (void*)GetProcAddress(loadRealDLL(), "auxGetVolume");
+	return (*funcp)(uDeviceID, uDeviceID);
+}
+
+MMRESULT WINAPI fake_auxSetVolume(UINT uDeviceID, DWORD dwVolume)
+{
+	static MMRESULT(WINAPI * funcp)(UINT uDeviceID, DWORD dwVolume) = NULL;
+	if (funcp == NULL)
+		funcp = (void*)GetProcAddress(loadRealDLL(), "auxSetVolume");
+	return (*funcp)(uDeviceID, dwVolume);
+
+	return MMSYSERR_NOERROR;
+}
+
+MCIERROR WINAPI fake_mciSendStringA(LPCTSTR cmd, LPTSTR ret, UINT cchReturn, HANDLE hwndCallback)
+{
+	static MCIERROR(WINAPI * funcp)(LPCTSTR cmd, LPTSTR ret, UINT cchReturn, HANDLE hwndCallback) = NULL;
+	if (funcp == NULL)
+		funcp = (void*)GetProcAddress(loadRealDLL(), "mciSendStringA");
+	return (*funcp)(cmd, ret, cchReturn, hwndCallback);
+}
+
+
+MCIERROR WINAPI fake_mciSendCommandA(MCIDEVICEID mciId, UINT uMsg, DWORD_PTR dwParam1, DWORD_PTR dwortParam2)
+{
+	static MCIERROR(WINAPI * funcp)(MCIDEVICEID mciId, UINT uMsg, DWORD_PTR dwParam1, DWORD_PTR dwortParam2) = NULL;
+	if (funcp == NULL)
+		funcp = (void*)GetProcAddress(loadRealDLL(), "mciSendCommandA");
+	return (*funcp)(mciId, uMsg, dwParam1, dwortParam2);
 }
